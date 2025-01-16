@@ -1,26 +1,66 @@
 "use client";
-import Image from "next/image";
+
 import styles from "./page.module.css";
-import { useState } from "react";
+import Product from "./components/products/product";
+import Offer50 from "./components/offers/offer50";
+import Offer20 from "./components/offers/offer20";
+import { useState, useEffect } from "react";
 
 export default function Home() {
 
-  const [reversedName, setReversedName] = useState("");
+  const [products, setProducts] = useState([])
 
-  const someValue = "Hello World";
+  const [loading, setLoading] = useState(true)
+  
 
-  const reverseName = (e) => {
-    const inputValue = e.target.value;
-    const reversedName = inputValue.split("").reverse().join("");
-    setReversedName(reversedName);
-  }
+  setTimeout(() => {
+    setProducts([
+      {
+        id: 1,
+        name: 'Product 1',
+        description: 'Product description',
+        price: 100,
+        image: '/product-1.jpg'
+      },
+      {
+        id: 2,
+        name: 'Product 2',
+        description: 'Product description',
+        price: 200,
+        image: '/product-2.jpg'
+      },
+      {
+        id: 3,
+        name: 'Product 3',
+        description: 'Product description',
+        price: 300,
+        image: '/product-3.jpg'
+      }
+    ])
 
+    console.log('Products loaded')
+  }, 5000)
+
+
+  useEffect(() => {
+    console.log('Products updated')
+    if (products.length > 0) {
+      setLoading(false)
+    }
+  }, [products])
+  
   return (
     <>
-      <h1 className={styles.title}>Welcome to Next.js!</h1>
-      <p>{someValue}</p>
-      <input type="text" placeholder="Type here" onInput={reverseName} />
-      <div>{ reversedName} </div>
+      <h1 className={styles.pageTitle}>Products</h1>
+      <Offer20 styles={styles} />
+      { loading && <div className={styles.loading}>Loading...</div> }
+      
+      { !loading && <div className={'products'}>
+        {products.map(product => (
+          <Product product={product} key={product.id} styles={styles} />
+        ))}
+      </div>}
+      <Offer50 styles={styles} />
     </>
   );
 }
